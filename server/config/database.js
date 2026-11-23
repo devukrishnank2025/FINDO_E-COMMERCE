@@ -15,15 +15,15 @@ class DatabaseConnection {
             }
 
             const options = {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
                 maxPoolSize: 10,
                 serverSelectionTimeoutMS: 5000,
                 socketTimeoutMS: 45000,
                 family: 4
             };
 
-            await mongoose.connect(config.MONGODB_URI, options);
+            await mongoose.connect(config.MONGO_URI, options);
+            console.log('database connected');
+            
             this.isConnected = true;
 
             mongoose.connection.on('error', (err) => {
@@ -37,12 +37,10 @@ class DatabaseConnection {
             });
 
         } catch (error) {
-            console.log('MongoDB connection failed:', error);
-            process.exit(1);
-
-        }
+    console.error('MongoDB connection failed:', error);
+    throw error;            // let the server decide to exit
+}
     }
-
 
     async disconnect() {
         try {
@@ -53,8 +51,6 @@ class DatabaseConnection {
             console.log('Error during MongoDB disconnect:', error);
         }
     }
-
-
     getConnectionStatus() {
         return {
             isConnected: this.isConnected,
@@ -74,8 +70,10 @@ const dbConnection = new DatabaseConnection();
 
 process.on('SIGINT', async () => {
     await dbConnection.disconnect();
+    console.log('this worked');
+    
     process.exit(0);
 });
 
 
-module.export = dbConnection;
+module.exports = dbConnection;

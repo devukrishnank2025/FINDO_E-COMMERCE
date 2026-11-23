@@ -6,9 +6,7 @@ const cors = require('cors');
 const database = require("./config/database");
 const { PORT } = require("./config/config");
 const { log } = require("console");
-
-
-const app = express();
+const { setupRoutes } = require("./routes");
 
 
 class Server {
@@ -19,13 +17,16 @@ class Server {
         this.app = express();
 
         this.server = http.createServer(this.app);
+        console.log('constructor worked');
+        
 
     }
 
-
     async initialise() {
         try {
-            await database.connect()
+            await database.connect();
+            
+            setupRoutes(this.app);
 
             console.log('server initialised successfully');
 
@@ -41,33 +42,29 @@ class Server {
     async start() {
         await this.initialise();
         this.server.listen(this.port, async () => {
-            console.log(`Server running in ${config.NODE_ENV} mode on port ${this.port}`);
+            console.log(`Server running in ${PORT} mode on port ${this.port}`);
         })
 
         this.setGracefullShutdown()
     }
 
-
-
-    setGracefullShutdown() {
+    setGracefullShutdown(signal) {
 
         const gracefulShutdown = async () => {
 
-            logger.info(`${signal} received. Starting graceful shutdown...`);
+            console.log(`${signal} received. Starting graceful shutdown...`);
 
             this.server.close(async () => {
 
-                logger.info('HTTP server closed');
+                console.log('HTTP server closed');
 
                 await dbConnection.disconnect();
 
-                logger.info('Graceful shutdown completed');
+                console.log('Graceful shutdown completed');
 
                 process.exit(0);
-
             });
         }
-
         process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
         process.on('SIGINT', () => gracefulShutdown('SIGINT'));
     }
@@ -75,20 +72,42 @@ class Server {
 
 
 
+        const appServer = new Server();
+        appServer.start();
+
+
+
+
+
+
+
+
+
+
+
+
+// const app = express()
 
 // app.use(
 //   "/ProductImages",
 //   express.static(path.join(__dirname, "public", "UserImages"))
 // );
 // app.use(cors());
-// connect();
+
+
+//      database.connect();
+     
+
+
+
 // app.use("/user", userRoute);
 
 // app.get('/login',(req,res)=>{
 //     res.send('this is a temporary server');
 // })
-// app.listen(3000,(error)=>{
+// app.listen(5000,(error)=>{
 //     if(error) console.log(error);
 //     console.log("server is connected");
 // }); 
+
 
