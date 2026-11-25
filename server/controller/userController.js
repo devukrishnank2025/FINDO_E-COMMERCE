@@ -5,8 +5,9 @@ const saveUser = async (req, res) => {
     try {
         const user = new userModel({
             name: req.body.name,
-             contact: req.body.contact,
-            image: req.file.filename
+            contact: req.body.contact,
+            image: req.file.filename,
+            password:req.body.password
         })
         console.log(user);
         const newResponse= await user.save()
@@ -17,6 +18,8 @@ const saveUser = async (req, res) => {
         console.log("error from save Product : ", error);
     }
 }
+
+
 module.exports = {
     saveUser
 }

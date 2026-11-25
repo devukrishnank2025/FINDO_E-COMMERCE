@@ -7,8 +7,8 @@ import { useReducer } from "react";
 export const addUser = createAsyncThunk(
     "addProduct"
     , async (data) => {
-        const response = await axios.post(`http://localhost:3000/user/registration`, data);
-        console.log(`http://localhost:3000/user/registration`);
+        const response = await axios.post(`http://localhost:5000/api/auth/register`, data);
+        console.log(`http://localhost:5000/api/auth/register`);
         console.log(response.data);
         return response.data;
     })

@@ -23,7 +23,7 @@ class DatabaseConnection {
 
             await mongoose.connect(config.MONGO_URI, options);
             console.log('database connected');
-            
+
             this.isConnected = true;
 
             mongoose.connection.on('error', (err) => {
@@ -37,16 +37,16 @@ class DatabaseConnection {
             });
 
         } catch (error) {
-    console.error('MongoDB connection failed:', error);
-    throw error;            // let the server decide to exit
-}
+            console.error('MongoDB connection failed:', error);
+            throw error;
+        }
     }
 
     async disconnect() {
         try {
             await mongoose.connection.close();
             this.isConnected = false;
-
+            
         } catch (error) {
             console.log('Error during MongoDB disconnect:', error);
         }
@@ -71,7 +71,7 @@ const dbConnection = new DatabaseConnection();
 process.on('SIGINT', async () => {
     await dbConnection.disconnect();
     console.log('this worked');
-    
+
     process.exit(0);
 });
 

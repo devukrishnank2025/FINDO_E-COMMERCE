@@ -12,11 +12,11 @@ export default function SignupForm() {
   const [preview, setPreview] = useState("");
   const [errors, setErrors] = useState({});
 
-    const {loading}=useSelector((state) => state.user)
+    const {loading}=useSelector((state) => state.user);
 
     const dispatch = useDispatch();
 
-  // Free the object URL when the image changes or the component unmounts
+  
   useEffect(() => {
     if (!image) return setPreview("");
     const url = URL.createObjectURL(image);
@@ -25,7 +25,9 @@ export default function SignupForm() {
   }, [image]);
 
   const handleChange = (e) => {
+
     setForm({ ...form, [e.target.name]: e.target.value });
+
   };
 
   const handleImage = (e) => {

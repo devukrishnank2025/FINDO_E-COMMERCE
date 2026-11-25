@@ -1,12 +1,13 @@
 const http = require("http");
 const express = require("express");
 const path = require("path");
-const userRoute = require('./routes/userRoute')
+const userRoute = require('./routes/auth')
 const cors = require('cors');
 const database = require("./config/database");
 const { PORT } = require("./config/config");
 const { log } = require("console");
 const { setupRoutes } = require("./routes");
+const { setupMiddleware } = require("./middlewares/setup");
 
 
 class Server {
@@ -19,12 +20,13 @@ class Server {
         this.server = http.createServer(this.app);
         console.log('constructor worked');
         
-
     }
 
     async initialise() {
         try {
             await database.connect();
+
+            setupMiddleware(this.app)
             
             setupRoutes(this.app);
 
@@ -71,17 +73,8 @@ class Server {
 }
 
 
-
         const appServer = new Server();
         appServer.start();
-
-
-
-
-
-
-
-
 
 
 
